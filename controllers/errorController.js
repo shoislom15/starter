@@ -59,17 +59,22 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    console.log('error', err.name);
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
 
-    console.log('error name', error);
+    // Docment with provided ID doesn't exist in DB
     if (error.name === 'CastError' || error.kind === 'ObjectId')
       error = handleCastErrorDB(err);
+
+    // Document with duplicate values
     if (error.code === 11000) error = handleDuplicateFieldsDB(err);
+
+    // Invalid input data
     if (error?._message?.includes('validation failed'))
       error = handleValidationErrorDB(err);
+
+    // Auth errors
     if (error?.name === 'JsonWebTokenError') error = handleJWTError(err);
     if (error?.name === 'TokenExpiredError') error = handleJWTExpiredError(err);
 
