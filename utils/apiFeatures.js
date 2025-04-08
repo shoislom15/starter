@@ -11,7 +11,7 @@ class APIFeatures {
 
     // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
-    console.log("queryStr:", queryStr)
+    console.log('queryStr:', queryStr);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     this.query = this.query.find(JSON.parse(queryStr));
@@ -21,16 +21,17 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
+      console.log('this.queryString.sort', this.queryString.sort);
       let sortBy = this.queryString.sort.split(',').join(' ');
 
       if (!sortBy.includes('createdAt')) {
         // making items to be shown by descending createdAt order
-        sortBy = sortBy + ' -createdAt';
+        sortBy += ' -createdAt';
       }
 
       if (!sortBy.includes('_id')) {
         // if there is no sorting by _id db returns items in different ordering each time when no sorting specified or two items has same order
-        sortBy = sortBy + ' _id';
+        sortBy += ' _id';
       }
 
       console.log('sortBy', sortBy);
